@@ -36,3 +36,14 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### MongoDB ###
+data/db/log
+data/db/journal
+data/db/diagnostic.data
+data/db/temp
+data/db/*.wt
+data/db/*.conf
+data/db/*.lock
+data/db/*.bson
+data/db/Wired*

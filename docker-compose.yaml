@@ -1,0 +1,59 @@
+version: '3.8'
+services:
+  database:
+    container_name: 'bookshop-database'
+    image: 'mongo:5.0.6'
+    environment:
+      MONGODB_DATABASE: bookshop
+    ports:
+      - 27017:27017
+    volumes:
+      - ./db_test_data:/db_test_data
+      - ./scripts/docker/mongodb_init.sh:/docker-entrypoint-initdb.d/mongodb_init.sh
+      - ./data/db:/data/db
+  app:
+    container_name: bookshop-backend
+    depends_on:
+      - database
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    restart: on-failure
+    ports:
+      - 8080:8080
+    stdin_open: true
+    tty: true
+    entrypoint: [ "/bin/bash", "-c" ]
+    command:
+      [
+        "./wait-for-it.sh database:27017 --timeout=300 --strict -- java -jar /app/*.jar"
+      ]
+  grafana:
+    container_name: bookshop-grafana
+    depends_on:
+      - app
+    build: './scripts/config/grafana'
+    ports:
+      - 3000:3000
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    networks:
+      monitoring:
+        aliases:
+          - grafana
+  prometheus:
+    container_name: bookshop-prometheus
+    depends_on:
+      - app
+    image: prom/prometheus
+    ports:
+      - 9090:9090
+    volumes:
+      - ./scripts/config/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      monitoring:
+        aliases:
+          - prometheus
+networks:
+  monitoring:

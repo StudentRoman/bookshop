@@ -1,0 +1,8 @@
+[{
+  "_id": {
+    "$oid": "662bf4a05e9694de78a9a606"
+  },
+  "name": "Author",
+  "year": 2014,
+  "_class": "edu.penzgtu.ip.bookshop.model.Author"
+}]

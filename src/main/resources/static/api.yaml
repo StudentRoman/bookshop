@@ -7,10 +7,6 @@ servers:
 tags:
   - name: book
     description: Доступ к книгам в магазине
-  - name: store
-    description: Доступ к заказам пользователей из магазина
-  - name: user
-    description: Пользователь, который взаимодействует с приложением
 paths:
   /book:
     post:
@@ -24,7 +20,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Book'
+              $ref: '#/components/schemas/BookDTO'
         required: true
       responses:
         '200':
@@ -32,56 +28,22 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Book'
+                $ref: '#/components/schemas/BookDTO'
         '400':
           description: Неверный формат запроса
         '422':
           description: Ошибка проверки параметров
-  /book/{bookId}:
-    get:
-      tags:
-        - book
-      summary: Получить книгу по ID
-      description: Возвращает информацию о книге с заданным идентификатором
-      operationId: getBookById
-      parameters:
-        - name: bookId
-          in: path
-          description: ID книги, которую нужно вернуть
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        '200':
-          description: Книга успешно получена
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Book'
-        '400':
-          description: Указан неверный идентификатор
-        '404':
-          description: Книга не найдена
     put:
       tags:
         - book
       summary: Обновить существующую книгу в магазине
       description: Обновляет информацию о книге с заданным идентификатором
       operationId: updateBook
-      parameters:
-        - name: bookId
-          in: path
-          description: ID книги, которую нужно обновить
-          required: true
-          schema:
-            type: integer
-            format: int64
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Book'
+              $ref: '#/components/schemas/BookDTO'
         required: true
       responses:
         '200':
@@ -89,13 +51,39 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Book'
+                $ref: '#/components/schemas/BookDTO'
         '400':
           description: Указан неверный ID
         '404':
           description: Книга не найдена
         '422':
           description: Исключение для проверки
+  /book/{bookName}:
+    get:
+      tags:
+        - book
+      summary: Получить книгу по ID
+      description: Возвращает информацию о книге с заданным идентификатором
+      operationId: getBookByName
+      parameters:
+        - name: bookName
+          in: path
+          description: ID книги, которую нужно вернуть
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Книга успешно получена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookDTO'
+        '400':
+          description: Указан неверный идентификатор
+        '404':
+          description: Книга не найдена
+  /book/{bookId}:
     delete:
       tags:
         - book
@@ -108,228 +96,67 @@ paths:
           description: Идентификатор книги для удаления
           required: true
           schema:
-            type: integer
-            format: int64
+            type: string
       responses:
         '200':
           description: Книга успешно удалена
         '400':
           description: Книга не найдена
-  /store/order:
-    post:
-      tags:
-        - store
-      summary: Создать заказ,
-      description: Создаёт новый заказ в магазине
-      operationId: createOrder
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Order'
-      responses:
-        '200':
-          description: Заказ создан успешно
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Order'
-        '400':
-          description: Неверный ввод
-        '422':
-          description: Ошибка проверки параметров
-  /store/order/{orderId}:
-    get:
-      tags:
-        - store
-      summary: Получить заказ по ID
-      description: Возвращает информацию о заказе с заданным идентификатором
-      operationId: getOrderById
-      parameters:
-        - name: orderId
-          in: path
-          description: ID заказа, который необходимо получить
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        '200':
-          description: Заказ успешно получен
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Order'
-        '400':
-          description: Указан неверный идентификатор
-        '404':
-          description: Заказ не найден
-    delete:
-      tags:
-        - store
-      summary: Удалить заказ по ID
-      operationId: deleteOrder
-      parameters:
-        - name: orderId
-          in: path
-          description: ID заказа, который необходимо удалить
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        '400':
-          description: Указан неверный идентификатор
-        '404':
-          description: Заказ не найден
-  /user:
-    post:
-      tags:
-        - user
-      summary: Создать пользователя
-      operationId: createUser
-      requestBody:
-        description: Созданный пользовательский объект
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/User'
-      responses:
-        default:
-          description: Успешная операция
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-  /user/{username}:
-    get:
-      tags:
-        - user
-      summary: Получить пользователя по имени
-      operationId: getUserByName
-      parameters:
-        - name: username
-          in: path
-          description: 'Имя пользователя, которое необходимо получить.. '
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Успешная операция
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-        '400':
-          description: Введено неверное имя пользователя
-        '404':
-          description: Пользователь не найден
 components:
   schemas:
-    Book:
+    BookDTO:
       type: object
       required: [id, name, author, publisher, price]
       properties:
         id:
-          type: integer
-          format: int64
-          example: 10
+          type: string
+          example: '10'
         name:
           type: string
           example: Гарри Поттер
+        category:
+          type: string
+          example: Фантастика
         ISBN:
           type: string
           example: 123-4-567-89012-3
         author:
           type: array
           items:
-            $ref: '#/components/schemas/Author'
+            $ref: '#/components/schemas/AuthorDTO'
         publisher:
           type: array
           items:
-            $ref: '#/components/schemas/Publisher'
+            $ref: '#/components/schemas/PublisherDTO'
         price:
-          type: number
-          example: 123.45
-    Order:
-      type: object
-      required: [id, userId, items, shipDate, status, complete]
-      properties:
-        id:
           type: integer
           format: int64
-          example: 10
-        userId:
-          type: integer
-          format: int64
-          example: 198772
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/Book'
-        shipDate:
-          type: string
-          format: date-time
-        status:
-          type: string
-          description: Статус заказа
-          example: В пути
-        complete:
-          type: boolean
-    Author:
+          example: 220
+    AuthorDTO:
       type: object
       required: [id, name, year]
       properties:
         id:
-          type: integer
-          format: int64
-          example: 1
+          type: string
+          example: '10'
         name:
           type: string
           example: Дж. К. Роулинг
         year:
-          type: number
-          example: 2024
-    Publisher:
+          type: integer
+          format: int64
+          example: 2014
+    PublisherDTO:
       type: object
       required: [id, name, year]
       properties:
         id:
-          type: integer
-          format: int64
-          example: 1
+          type: string
+          example: '10'
         name:
           type: string
           example: АСТ
         year:
-          type: number
-          example: 2024
-    User:
-      type: object
-      required: [id, username, firstName, email, password]
-      properties:
-        id:
           type: integer
           format: int64
-          example: 10
-        username:
-          type: string
-          example: theUser
-        firstName:
-          type: string
-          example: Иван
-        lastName:
-          type: string
-          example: Иванов
-        email:
-          type: string
-          example: test@example.com
-        password:
-          type: string
-          example: '12345'
-        orders:
-          type: array
-          items:
-            $ref: '#/components/schemas/Order'
-        
+          example: 2014

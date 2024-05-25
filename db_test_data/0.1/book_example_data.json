@@ -1,0 +1,29 @@
+[{
+  "_id": {
+    "$oid": "663529c44691b8c6b1eed710"
+  },
+  "name": "123123132131",
+  "ISBN": "123-4-567-89012-3",
+  "author": [],
+  "publisher": [],
+  "price": 32132131,
+  "_class": "edu.penzgtu.ip.bookshop.model.Book"
+},
+{
+  "_id": {
+    "$oid": "66354d364691b8c6b1eed71c"
+  },
+  "name": "33",
+  "ISBN": "123",
+  "author": [
+    {
+      "$ref": "author",
+      "$id": {
+        "$oid": "662bf4a05e9694de78a9a606"
+      }
+    }
+  ],
+  "publisher": [],
+  "price": 32132131,
+  "_class": "edu.penzgtu.ip.bookshop.model.Book"
+}]
